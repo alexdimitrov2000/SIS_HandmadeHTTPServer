@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.HTTP", "SIS.HTTP\SIS.HTTP.csproj", "{1FA79D87-2C74-4DD1-80EC-EA3AEC1E88E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.WebServer", "SIS.WebServer\SIS.WebServer.csproj", "{36FB7E4B-10DD-4653-90AE-678701D6B269}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.Demo", "SIS.Demo\SIS.Demo.csproj", "{41D67C42-788E-452E-90D1-23417099B418}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FA79D87-2C74-4DD1-80EC-EA3AEC1E88E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA79D87-2C74-4DD1-80EC-EA3AEC1E88E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA79D87-2C74-4DD1-80EC-EA3AEC1E88E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA79D87-2C74-4DD1-80EC-EA3AEC1E88E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36FB7E4B-10DD-4653-90AE-678701D6B269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36FB7E4B-10DD-4653-90AE-678701D6B269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36FB7E4B-10DD-4653-90AE-678701D6B269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36FB7E4B-10DD-4653-90AE-678701D6B269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D67C42-788E-452E-90D1-23417099B418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D67C42-788E-452E-90D1-23417099B418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D67C42-788E-452E-90D1-23417099B418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D67C42-788E-452E-90D1-23417099B418}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2621FEBF-CF42-4D70-A751-ACAC43758830}
+	EndGlobalSection
+EndGlobal
