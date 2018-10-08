@@ -1,28 +1,26 @@
 ﻿namespace SIS.WebServer
 {
-    using System;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading.Tasks;
-
-    using Routing;
+    using HTTP.Cookies;
+    using HTTP.Enums;
     using HTTP.Requests;
     using HTTP.Requests.Contracts;
     using HTTP.Responses.Contracts;
-    using HTTP.Responses;
-    using HTTP.Enums;
     using HTTP.Sessions;
-    using HTTP.Cookies;
-    using SIS.HTTP.Exceptions;
-    using SIS.WebServer.Results;
+    using Results;
+    using Routing;
+    using HTTP.Common;
+    using HTTP.Exceptions;
+    using System;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading.Tasks;
 
     public class ConnectionHandler
     {
         private readonly Socket client;
 
         private readonly ServerRoutingTable serverRoutingTable;
-
-        private readonly HttpSessionStorage sessionStorage;
 
         public ConnectionHandler(Socket client, ServerRoutingTable serverRoutingTable)
         {
@@ -91,7 +89,11 @@
         private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
             if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
-                return new HttpResponse(HttpResponseStatusCode.NotFound);
+            {
+                //return new HttpResponse(HttpResponseStatusCode.NotFound);
+                string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
+                return new BadRequestResult(notFoundContent);
+            }
 
             return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
         }
@@ -101,7 +103,7 @@
             byte[] byteSegments = httpResponse.GetBytes();
 
             // debug
-            //string responseString = Encoding.UTF8.GetString(byteSegments);
+            string responseString = Encoding.UTF8.GetString(byteSegments);
             //Console.WriteLine("RESPONSE--------------------------");
             //Console.WriteLine(responseString);
 

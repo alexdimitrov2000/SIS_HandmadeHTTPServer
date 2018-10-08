@@ -60,7 +60,7 @@
 
             foreach (var cookieString in stringCookies)
             {
-                string[] cookieTokens = cookieString.Split('=');
+                string[] cookieTokens = cookieString.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
 
                 if (cookieTokens.Length != 2)
                     continue;
@@ -74,7 +74,7 @@
 
         private bool IsValidRequestLine(string[] requestLine)
         {
-            return (requestLine.Length == 3 && requestLine[2].ToUpper() == "HTTP/1.1");
+            return (requestLine.Length == 3 && requestLine[2].ToUpper() == GlobalConstants.HttpOneProtocolFragment);
         }
 
         private bool IsValidRequestQueryString(string queryString, string[] queryParameters)
@@ -133,9 +133,9 @@
             if (!this.Url.Contains('?'))
                 return;
 
-            string queryString = this.Url.Split(new[] { '?', '#' }, StringSplitOptions.RemoveEmptyEntries)[1];
+            string queryString = this.Url.Split(new[] { '?', '#' }, StringSplitOptions.None)[1];
 
-            if (!queryString.Contains('='))
+            if (string.IsNullOrWhiteSpace(queryString) || !queryString.Contains('='))
                 return;
 
             var queryPairs = queryString.Split('&');

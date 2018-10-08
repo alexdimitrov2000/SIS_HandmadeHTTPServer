@@ -59,7 +59,12 @@
                 .AppendLine(this.Headers.ToString());
 
             if (this.Cookies.HasCookies())
-                result.AppendLine($"Set-Cookie: {this.Cookies}");
+            {
+                foreach (var cookie in this.Cookies)
+                {
+                    result.AppendLine($"Set-Cookie: {cookie}");
+                }
+            }
 
             result.AppendLine();
 
