@@ -7,5 +7,9 @@
         public const string HostHeaderKey = "Host";
 
         public const string NotFoundFilePath = "Views/NotFound.html";
+
+        public const string ErrorViewPath = "Views/Error.html";
+
+        public const string ErrorModel = "@Model.Error";
     }
 }

@@ -11,30 +11,32 @@
             <a href="/">Home</a>
         </li>
         <li>
-            <a href="/Users/Login">Login</a>
+            <a href="/Albums/All">Albums</a>
         </li>
         <li>
-            <a href="/Users/Register">Register</a>
+            <a href="/Users/Logout">Logout</a>
         </li>
     </ul>
 
     <hr />
 
-    <h1>Login</h1>
-    <form method="post" action="/Users/Login">
+    <h1>Create Album</h1>
+    <hr />
+    <form action="/Albums/Create" method="post">
         <div>
-            Username/Email <input type="text" name="username" placeholder="Username/Email" />
+            Name <input type="text" placeholder="Name..." name="name"/>
         </div>
         <div>
-            Password <input type="password" name="password" placeholder="Password" />
+            Cover <input type="text" placeholder="Cover..." name="cover"/>
         </div>
         <div>
-            <input type="submit" value="Login" />
+            <input type="submit" value="Create" />
         </div>
     </form>
-
     <hr />
-
+    <a href="/Albums/All">Back To All</a>
+    <hr />
+    
     <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>
 </body>
 </html>

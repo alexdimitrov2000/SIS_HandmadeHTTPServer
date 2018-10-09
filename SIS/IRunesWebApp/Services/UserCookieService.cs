@@ -1,11 +1,11 @@
-﻿using IRunesWebApp.Services.Contracts;
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace CakesWebApp.Services
+﻿namespace IRunesWebApp.Services
 {
+    using Contracts;
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+
     public class UserCookieService : IUserCookieService
     {
         public const string EncryptKey = "E646C8DF278CD5931069B522E695D4F2";

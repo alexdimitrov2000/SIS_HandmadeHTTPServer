@@ -79,7 +79,7 @@
 
         private bool IsValidRequestQueryString(string queryString, string[] queryParameters)
         {
-            return string.IsNullOrEmpty(queryString) && queryParameters.Length > 0;
+            return !string.IsNullOrEmpty(queryString) && queryParameters.Length > 0;
         }
 
         private void ParseRequestMethod(string[] requestLine)

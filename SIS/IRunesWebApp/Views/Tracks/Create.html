@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h1>IRunes</h1>
+    <ul>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/Albums/All">Albums</a>
+        </li>
+        <li>
+            <a href="/Users/Logout">Logout</a>
+        </li>
+    </ul>
+
+    <hr />
+
+    <h1>Create Track</h1>
+    <hr />
+    <form action="/Tracks/Create?albumId=@Model.AlbumId" method="post">
+        <div>
+            Name <input type="text" placeholder="Name..." name="name"/>
+        </div>
+        <div>
+            Link <input type="text" placeholder="Link..." name="link"/>
+        </div>
+        <div>
+            Price <input type="number" placeholder="Price..." name="price"/>
+        </div>
+        <input type="submit" value="Create" />
+    </form>
+    <hr />
+    <a href="../Albums/Details?id=@Model.AlbumId">Back To Album</a>
+
+    <hr />
+    <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>
+</body>
+</html>

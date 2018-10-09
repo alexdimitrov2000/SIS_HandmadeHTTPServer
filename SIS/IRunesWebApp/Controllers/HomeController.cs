@@ -2,26 +2,27 @@
 {
     using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Results;
+    using System.Collections.Generic;
 
     public class HomeController : BaseController
     {
+        private const string UsernameKey = "Username";
+        private const string LoggedIndexView = "LoggedIndex";
+        private const string IndexView = "Index";
+
         public IHttpResponse Index(IHttpRequest request)
         {
-            string username = this.GetUsername(request);
-            if (username != null)
+            if (this.IsAuthenticated(request))
             {
-                string result = this.View("LoggedIndex").ToString();
-
-                if (result.Contains(""))
+                var username = this.GetUsername(request);
+                var parameters = new Dictionary<string, string>
                 {
-
-                }
-
-                return new HtmlResult(result, SIS.HTTP.Enums.HttpResponseStatusCode.Ok);
+                    { UsernameKey, username }
+                };
+                return this.View(LoggedIndexView, parameters);
             }
 
-            return this.View("Index");
+            return this.View(IndexView);
         }
     }
 }
