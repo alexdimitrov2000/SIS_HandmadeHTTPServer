@@ -11,5 +11,9 @@
         public const string ErrorViewPath = "Views/Error.html";
 
         public const string ErrorModel = "@Model.Error";
+
+        public static string[] ResourceExtensions = { ".js", ".css" };
+
+        public static string Dot = ".";
     }
 }

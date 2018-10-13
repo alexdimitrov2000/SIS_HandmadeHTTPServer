@@ -1,34 +1,38 @@
-﻿<!DOCTYPE html>
+﻿<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">IRunes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="#navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Albums/All">Albums</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Users/Logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h1>IRunes</h1>
-    <ul>
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            <a href="/Albums/All">Albums</a>
-        </li>
-        <li>
-            <a href="/Users/Logout">Logout</a>
-        </li>
-    </ul>
+<div id="line"></div>
 
-    <hr />
-
-    <iframe src="@Model.Video"></iframe>
-    <h3>Name: @Model.Name</h3>
-    <h3>Price: $@Model.Price</h3>
-
-    <hr />
-    <a href="../Albums/Details?id=@Model.AlbumId">Back To Album</a>
-
-    <hr />
-
-    <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>
-</body>
-</html>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6 align-self-center">
+            <h3 class="black-heading text-center">Track Name: @Model.Name</h3>
+            <h3 class="black-heading text-center">Track Price: $@Model.Price</h3>
+            <div id="line"></div>
+            <div class="embed-responsive embed-responsive-21by9">
+                <iframe class="embed-responsive-item" src="@Model.Video"></iframe>
+            </div>
+            <div id="line"></div>
+            <div class="submit-button">
+                <a href="../Albums/Details?id=@Model.AlbumId" class="btn">Back To Album</a>
+            </div>
+        </div>
+    </div>
+</div>

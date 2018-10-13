@@ -1,6 +1,8 @@
 ﻿namespace IRunesWebApp
 {
     using Controllers;
+    using IRunesWebApp.Data;
+    using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Enums;
     using SIS.WebServer;
     using SIS.WebServer.Routing;

@@ -1,21 +1,28 @@
-﻿<h1>IRunes</h1>
-<ul>
-    <li>
-        <a href="/">Home</a>
-    </li>
-    <li>
-        <a href="/Albums/All">Albums</a>
-    </li>
-    <li>
-        <a href="/Users/Logout">Logout</a>
-    </li>
-</ul>
+﻿<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">IRunes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="#navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Albums/All">Albums</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Users/Logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-<hr />
+<div id="line"></div>
 
-<h1>Welcome, @Model.Username</h1>
-<h2>IRunes wishes you fun experience.</h2>
-
-<hr />
+<div class="jumbotron jumbotron-fluid">
+    <h1>Welcome, <span>@Model.Username</span></h1>
+    <h2>IRunes wishes you fun experience.</h2>
+</div>
 
 <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>

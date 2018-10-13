@@ -18,8 +18,8 @@
         private const string DetailsView = "Details";
         private const string IndexView = "/";
         private const string AlbumHrefTag = "<a href=\"/Albums/Details?id=@albumId\" ><strong>@albumName</strong></a><br /><br />";
-        private const string AlbumImageTag = "<img src=\"@albumImageUrl\" />";
-        private const string TrackTag = "<li><a href=\"/Tracks/Details?albumId=@albumId&trackId=@trackId\" ><em>@trackName</em></a></li>";
+        private const string AlbumImageTag = "<img src=\"@albumImageUrl\" class=\"img-fluid\" alt=\"Responsive image\" />";
+        private const string TrackTag = "<li class=\"black-heading\"><a href=\"/Tracks/Details?albumId=@albumId&trackId=@trackId\" ><em>@trackName</em></a></li>";
         private const string CoverParam = "Cover";
         private const string NameParam = "Name";
         private const string PriceParam = "Price";

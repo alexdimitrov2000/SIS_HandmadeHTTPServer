@@ -15,6 +15,7 @@
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Linq;
 
     public class ConnectionHandler
     {
@@ -88,14 +89,45 @@
 
         private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
+            if (IsResourceRequest(httpRequest.Path))
+                return ResourceFile(httpRequest.Path);
+
             if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
             {
-                //return new HttpResponse(HttpResponseStatusCode.NotFound);
                 string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
                 return new BadRequestResult(notFoundContent);
             }
 
             return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
+        }
+
+        private IHttpResponse ResourceFile(string requestPath)
+        {
+            string resourcePath = requestPath.Substring(1);
+
+            if (!File.Exists(resourcePath))
+            {
+                string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
+                return new BadRequestResult(notFoundContent);
+            }
+
+            var resourceContent = File.ReadAllBytes(resourcePath);
+
+            return new InlineResourceResult(resourceContent, HttpResponseStatusCode.Ok);
+        }
+
+        private bool IsResourceRequest(string path)
+        {
+            if (path.Contains(GlobalConstants.Dot))
+            {
+                var lastIndexOfDot = path.LastIndexOf(GlobalConstants.Dot);
+
+                var resourceExtension = path.Substring(lastIndexOfDot);
+
+                return GlobalConstants.ResourceExtensions.Contains(resourceExtension);
+            }
+
+            return false;
         }
 
         private async Task PrepareResponse(IHttpResponse httpResponse)

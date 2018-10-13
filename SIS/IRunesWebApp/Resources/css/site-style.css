@@ -1,0 +1,96 @@
+﻿body {
+    color: white;
+}
+
+nav a {
+    color: white;
+}
+
+    nav a:hover {
+        color: orange;
+    }
+
+h1 {
+    border-bottom: solid;
+    border-bottom-color: white;
+    padding-bottom: 8px;
+}
+.navbar {
+    background-color: #0b9e0b;
+    padding-bottom: 1px;
+    padding-top: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+span {
+    color: orange;
+}
+
+form {
+    text-align: left;
+    border-top: solid;
+    border-top-color: #0b9e0b;
+    margin: 0 auto;
+    width: 250px;
+}
+
+label {
+    color: black;
+}
+
+footer {
+    text-align: center;
+    color: black;
+    border-top: solid;
+    border-top-color: #0b9e0b;
+    padding-top: 5px;
+}
+
+#heading {
+    color: #0b9e0b;
+    text-align: center;
+}
+
+#line {
+    border-top: 3px;
+    border-top: solid;
+    border-top-color: #0b9e0b;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+.black-heading {
+    color: black;
+}
+
+.submit-button {
+    text-align: center;
+}
+
+.btn {
+    color: white;
+    background-color: #0b9e0b;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    color: white;
+}
+
+.user-data {
+    padding-top: 5px;
+}
+
+.jumbotron {
+    background-color: #0b9e0b;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.jumbotron a {
+    color: orange;
+}

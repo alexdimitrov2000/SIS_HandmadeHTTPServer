@@ -17,6 +17,8 @@
 
         private const string ViewsFolderName = "Views";
 
+        private const string LayoutFile = "_Layout.html";
+
         protected readonly IRunesDbContext dbContext;
 
         protected readonly IUserCookieService cookieService;
@@ -61,13 +63,16 @@
         private string GetViewContent(string viewName,
             IDictionary<string, string> viewBag)
         {
+            var layoutContent = File.ReadAllText($"{ViewsFolderName}/{LayoutFile}");
             var content = File.ReadAllText($"{ViewsFolderName}/{this.GetControllerName()}/{viewName}.html");
             foreach (var item in viewBag)
             {
                 content = content.Replace(ModelReplace + item.Key, item.Value);
             }
+
+            layoutContent = layoutContent.Replace("@RenderBody", content);
             
-            return content;
+            return layoutContent;
         }
     }
 }

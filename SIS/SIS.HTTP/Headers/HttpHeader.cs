@@ -2,6 +2,9 @@
 {
     public class HttpHeader
     {
+        public static string ContentLength = "Content-Length";
+        public static string ContentDisposition = "Content-Disposition";
+
         public HttpHeader(string key, string value)
         {
             this.Key = key;
