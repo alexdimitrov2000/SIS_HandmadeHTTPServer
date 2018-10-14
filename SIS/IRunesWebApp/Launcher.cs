@@ -3,6 +3,8 @@
     using Controllers;
     using IRunesWebApp.Data;
     using Microsoft.EntityFrameworkCore;
+    using SIS.Framework;
+    using SIS.Framework.Routers;
     using SIS.HTTP.Enums;
     using SIS.WebServer;
     using SIS.WebServer.Routing;
@@ -11,12 +13,25 @@
     {
         public static void Main(string[] args)
         {
-            ServerRoutingTable serverRoutingTable = new ServerRoutingTable();
+            //ServerRoutingTable serverRoutingTable = new ServerRoutingTable();
 
+            //ConfigureRoutes(serverRoutingTable);
+
+            //Server server = new Server(8000, serverRoutingTable);
+
+            //server.Run();
+
+            var server = new Server(8000, new ControllerRouter());
+
+            MvcEngine.Run(server);
+        }
+
+        private static void ConfigureRoutes(ServerRoutingTable serverRoutingTable)
+        {
             // GET REQUESTS
-            serverRoutingTable.Routes[HttpRequestMethod.Get]["/"] 
-                    = request => new HomeController().Index(request);
-            serverRoutingTable.Routes[HttpRequestMethod.Get]["/Home/Index"] 
+            //serverRoutingTable.Routes[HttpRequestMethod.Get]["/"] 
+            //        = request => new HomeController().Index(request);
+            serverRoutingTable.Routes[HttpRequestMethod.Get]["/Home/Index"]
                     = serverRoutingTable.Routes[HttpRequestMethod.Get]["/"];
             serverRoutingTable.Routes[HttpRequestMethod.Get]["/Users/Login"]
                     = request => new UsersController().Login();
@@ -44,10 +59,6 @@
                     = request => new AlbumsController().DoCreate(request);
             serverRoutingTable.Routes[HttpRequestMethod.Post]["/Tracks/Create"]
                     = request => new TracksController().DoCreate(request);
-
-            Server server = new Server(8000, serverRoutingTable);
-
-            server.Run();
         }
     }
 }

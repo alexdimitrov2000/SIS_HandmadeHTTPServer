@@ -16,6 +16,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Linq;
+    using SIS.WebServer.Api;
 
     public class ConnectionHandler
     {
@@ -23,10 +24,18 @@
 
         private readonly ServerRoutingTable serverRoutingTable;
 
+        private readonly IHttpHandler handler;
+
         public ConnectionHandler(Socket client, ServerRoutingTable serverRoutingTable)
         {
             this.client = client;
             this.serverRoutingTable = serverRoutingTable;
+        }
+
+        public ConnectionHandler(Socket client, IHttpHandler handler)
+        {
+            this.client = client;
+            this.handler = handler;
         }
 
         private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
@@ -152,7 +161,7 @@
                 {
                     string sessionId = this.SetRequestSession(httpRequest);
 
-                    var httpResponse = this.HandleRequest(httpRequest);
+                    var httpResponse = this.handler.Handle(httpRequest);
 
                     this.SetResponseSession(httpResponse, sessionId);
 

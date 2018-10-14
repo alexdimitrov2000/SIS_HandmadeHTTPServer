@@ -3,6 +3,7 @@
     using Data;
     using Services;
     using Services.Contracts;
+    using SIS.Framework.Controllers;
     using SIS.HTTP.Cookies;
     using SIS.HTTP.Enums;
     using SIS.HTTP.Requests.Contracts;
@@ -11,7 +12,7 @@
     using System.Collections.Generic;
     using System.IO;
 
-    public abstract class BaseController
+    public abstract class BaseController : Controller
     {
         private const string ModelReplace = "@Model.";
 
