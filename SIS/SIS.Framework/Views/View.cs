@@ -1,26 +1,53 @@
 ﻿namespace SIS.Framework.Views
 {
     using SIS.Framework.ActionResults.Contracts;
+    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public class View : IRenderable
     {
         private readonly string fullyQualifiedTemplateName;
 
-        public View(string fullyQualifiedTemplateName)
+        private readonly IDictionary<string, object> viewData;
+
+        public View(string fullyQualifiedTemplateName, IDictionary<string, object> viewData)
         {
             this.fullyQualifiedTemplateName = fullyQualifiedTemplateName;
-        }
-
-        private string ReadFile(string fullyQualifiedTemplateName)
-        {
-            if (!File.Exists(fullyQualifiedTemplateName))
-                throw new FileNotFoundException();
-
-            return File.ReadAllText(fullyQualifiedTemplateName);
+            this.viewData = viewData;
         }
 
         public string Render()
-            =>  this.ReadFile(this.fullyQualifiedTemplateName);
+        {
+            string fullHtml = this.ReadFile();
+            string renderedHtml = this.RenderHtml(fullHtml);
+
+            return renderedHtml;
+        }
+
+        private string ReadFile()
+        {
+            if (!File.Exists(this.fullyQualifiedTemplateName))
+                throw new FileNotFoundException();
+
+            return File.ReadAllText(this.fullyQualifiedTemplateName);
+        }
+
+        private string RenderHtml(string fullHtml)
+        {
+            string renderedHtml = fullHtml;
+
+            if (this.viewData.Any())
+            {
+                foreach (var parameter in this.viewData)
+                {
+                    renderedHtml = renderedHtml
+                        .Replace($"{{{{{{{parameter.Key}}}}}}}", parameter.Value.ToString());
+                }
+            }
+
+            return renderedHtml;
+        }
     }
 }
