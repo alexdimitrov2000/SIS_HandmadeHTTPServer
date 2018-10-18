@@ -1,22 +1,23 @@
 ﻿namespace SIS.WebServer
 {
-    using HTTP.Cookies;
+    using Api;
+    using Results;
+    using Routing;
     using HTTP.Enums;
+    using HTTP.Common;
+    using HTTP.Cookies;
+    using HTTP.Sessions;
+    using HTTP.Exceptions;
     using HTTP.Requests;
     using HTTP.Requests.Contracts;
     using HTTP.Responses.Contracts;
-    using HTTP.Sessions;
-    using Results;
-    using Routing;
-    using HTTP.Common;
-    using HTTP.Exceptions;
+
     using System;
     using System.IO;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
     using System.Linq;
-    using SIS.WebServer.Api;
 
     public class ConnectionHandler
     {
