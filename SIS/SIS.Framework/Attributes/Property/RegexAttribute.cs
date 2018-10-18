@@ -9,7 +9,12 @@
 
         public RegexAttribute(string pattern)
         {
-            this.pattern = "^" + pattern + "$";
+            if (!pattern.StartsWith('^'))
+                pattern = "^" + pattern;
+            if (!pattern.EndsWith('$'))
+                pattern = pattern + "$";
+
+            this.pattern = pattern;
         }
 
         public override bool IsValid(object value)
