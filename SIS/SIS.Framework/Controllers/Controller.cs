@@ -1,6 +1,7 @@
 ﻿namespace SIS.Framework.Controllers
 {
     using Views;
+    using Models;
     using Utilities;
     using ActionResults;
     using ActionResults.Contracts;
@@ -11,7 +12,11 @@
     public abstract class Controller
     {
         protected Controller()
-        { }
+        {
+            this.Model = new ViewModel();
+        }
+
+        public ViewModel Model { get; }
 
         public IHttpRequest Request { get; set; }
 
