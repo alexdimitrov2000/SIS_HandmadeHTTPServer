@@ -10,6 +10,7 @@
     using SIS.WebServer.Results;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -118,7 +119,7 @@
 
             MethodInfo action = this.GetMethod(requestMethod.ToString(), controller, actionName);
 
-            object[] actionParameters = this.MapActionParameters(action, request);
+            object[] actionParameters = this.MapActionParameters(action, controller, request);
 
             IActionResult actionResult = this.InvokeAction(controller, action, actionParameters);
 
@@ -128,7 +129,7 @@
         private IActionResult InvokeAction(Controller controller, MethodInfo action, object[] actionParameters)
             => (IActionResult)action.Invoke(controller, actionParameters);
 
-        private object[] MapActionParameters(MethodInfo action, IHttpRequest request)
+        private object[] MapActionParameters(MethodInfo action, Controller controller, IHttpRequest request)
         {
             ParameterInfo[] actionParametersInfo = action.GetParameters();
             object[] mappedActionParameters = new object[actionParametersInfo.Length];
@@ -141,7 +142,11 @@
                         currentActionParameterInfo.ParameterType == typeof(string))
                     mappedActionParameters[i] = ProcessPrimitiveParameter(currentActionParameterInfo, request);
                 else
-                    mappedActionParameters[i] = ProcessBindingModelParameters(currentActionParameterInfo, request);
+                {
+                    object bindingModel = ProcessBindingModelParameters(currentActionParameterInfo, request);
+                    controller.ModelState.IsValid = this.IsValid(bindingModel, currentActionParameterInfo.ParameterType);
+                    mappedActionParameters[i] = bindingModel;
+                }
             }
 
             return mappedActionParameters;
@@ -215,6 +220,30 @@
             }
 
             return false;
+        }
+
+        private bool? IsValid(object bindingModel, Type bindingModelType)
+        {
+            PropertyInfo[] properties = bindingModelType.GetProperties();
+
+            foreach (var property in properties)
+            {
+                var validationAttributes = property
+                    .GetCustomAttributes()
+                    .Where(a => a is ValidationAttribute)
+                    .Cast<ValidationAttribute>()
+                    .ToList();
+
+                foreach (var attribute in validationAttributes)
+                {
+                    var propertyValue = property.GetValue(bindingModel);
+
+                    if (!attribute.IsValid(propertyValue))
+                        return false;
+                }
+            }
+
+            return true;
         }
     }
 }
