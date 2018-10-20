@@ -12,6 +12,8 @@
 
         public const string ErrorModel = "@Model.Error";
 
+        public const string ModelParam = "@Model.";
+
         public static string[] ResourceExtensions = { ".js", ".css" };
 
         public static string Dot = ".";
