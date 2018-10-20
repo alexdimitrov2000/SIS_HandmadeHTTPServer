@@ -25,7 +25,7 @@
 
         private readonly ServerRoutingTable serverRoutingTable;
 
-        private readonly IHttpHandler handler;
+        private readonly IHttpRouterContext routeHandlingContext;
 
         public ConnectionHandler(Socket client, ServerRoutingTable serverRoutingTable)
         {
@@ -33,18 +33,39 @@
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        public ConnectionHandler(Socket client, IHttpHandler handler)
+        public ConnectionHandler(Socket client, IHttpRouterContext routeHandlingContext)
         {
             this.client = client;
-            this.handler = handler;
+            this.routeHandlingContext = routeHandlingContext;
         }
 
-        private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
+        public async Task ProcessRequestAsync()
         {
-            if (sessionId != null)
+            try
             {
-                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionCookieKey, $"{sessionId};HttpOnly=true"));
+                var httpRequest = await this.ReadRequest();
+
+                if (httpRequest != null)
+                {
+                    string sessionId = this.SetRequestSession(httpRequest);
+
+                    var httpResponse = this.routeHandlingContext.Handle(httpRequest);
+
+                    this.SetResponseSession(httpResponse, sessionId);
+
+                    await this.PrepareResponse(httpResponse);
+                }
             }
+            catch (BadRequestException bre)
+            {
+                await this.PrepareResponse(new TextResult(bre.Message, HttpResponseStatusCode.BadRequest));
+            }
+            catch (Exception e)
+            {
+                await this.PrepareResponse(new TextResult(e.Message, HttpResponseStatusCode.InternalServerError));
+            }
+
+            this.client.Shutdown(SocketShutdown.Both);
         }
 
         private string SetRequestSession(IHttpRequest request)
@@ -66,6 +87,14 @@
             }
 
             return sessionId;
+        }
+
+        private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
+        {
+            if (sessionId != null)
+            {
+                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionCookieKey, $"{sessionId};HttpOnly=true"));
+            }
         }
 
         private async Task<IHttpRequest> ReadRequest()
@@ -97,48 +126,19 @@
             return new HttpRequest(result.ToString());
         }
 
-        private IHttpResponse HandleRequest(IHttpRequest httpRequest)
-        {
-            if (IsResourceRequest(httpRequest.Path))
-                return ResourceFile(httpRequest.Path);
+        //private IHttpResponse HandleRequest(IHttpRequest httpRequest)
+        //{
+        //    if (IsResourceRequest(httpRequest.Path))
+        //        return this.resourceRouter.Handle(httpRequest);
 
-            if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
-            {
-                string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
-                return new BadRequestResult(notFoundContent);
-            }
+        //    if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
+        //    {
+        //        string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
+        //        return new BadRequestResult(notFoundContent);
+        //    }
 
-            return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
-        }
-
-        private IHttpResponse ResourceFile(string requestPath)
-        {
-            string resourcePath = requestPath.Substring(1);
-
-            if (!File.Exists(resourcePath))
-            {
-                string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
-                return new BadRequestResult(notFoundContent);
-            }
-
-            var resourceContent = File.ReadAllBytes(resourcePath);
-
-            return new InlineResourceResult(resourceContent, HttpResponseStatusCode.Ok);
-        }
-
-        private bool IsResourceRequest(string path)
-        {
-            if (path.Contains(GlobalConstants.Dot))
-            {
-                var lastIndexOfDot = path.LastIndexOf(GlobalConstants.Dot);
-
-                var resourceExtension = path.Substring(lastIndexOfDot);
-
-                return GlobalConstants.ResourceExtensions.Contains(resourceExtension);
-            }
-
-            return false;
-        }
+        //    return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
+        //}
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
         {
@@ -150,35 +150,6 @@
             //Console.WriteLine(responseString);
 
             await this.client.SendAsync(byteSegments, SocketFlags.None);
-        }
-
-        public async Task ProcessRequestAsync()
-        {
-            try
-            {
-                var httpRequest = await this.ReadRequest();
-
-                if (httpRequest != null)
-                {
-                    string sessionId = this.SetRequestSession(httpRequest);
-
-                    var httpResponse = this.handler.Handle(httpRequest);
-
-                    this.SetResponseSession(httpResponse, sessionId);
-
-                    await this.PrepareResponse(httpResponse);
-                }
-            }
-            catch (BadRequestException bre)
-            {
-                await this.PrepareResponse(new TextResult(bre.Message, HttpResponseStatusCode.BadRequest));
-            }
-            catch (Exception e)
-            {
-                await this.PrepareResponse(new TextResult(e.Message, HttpResponseStatusCode.InternalServerError));
-            }
-
-            this.client.Shutdown(SocketShutdown.Both);
         }
     }
 }

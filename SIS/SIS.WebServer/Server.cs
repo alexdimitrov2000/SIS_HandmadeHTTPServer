@@ -1,7 +1,8 @@
 ﻿namespace SIS.WebServer
 {
+    using Api;
     using Routing;
-    using SIS.WebServer.Api;
+
     using System;
     using System.Net;
     using System.Net.Sockets;
@@ -17,7 +18,7 @@
 
         private readonly ServerRoutingTable serverRoutingTable;
 
-        private readonly IHttpHandler handler;
+        private readonly IHttpRouterContext routeHandlingContext;
 
         private bool isRunning;
 
@@ -29,12 +30,12 @@
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        public Server(int port, IHttpHandler httpHandler)
+        public Server(int port, IHttpRouterContext routeHandlingContext)
         {
             this.port = port;
             this.listener = new TcpListener(IPAddress.Parse(LocalhostIpAddress), port);
 
-            this.handler = httpHandler;
+            this.routeHandlingContext = routeHandlingContext;
         }
 
         public void Run()
@@ -53,7 +54,7 @@
             while (this.isRunning)
             {
                 var client = await this.listener.AcceptSocketAsync();
-                var connectionHandler = new ConnectionHandler(client, this.handler);
+                var connectionHandler = new ConnectionHandler(client, this.routeHandlingContext);
 
                 await connectionHandler.ProcessRequestAsync();
             }

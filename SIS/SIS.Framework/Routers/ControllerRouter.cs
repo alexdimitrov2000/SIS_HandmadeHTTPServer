@@ -93,9 +93,6 @@
 
         public IHttpResponse Handle(IHttpRequest request)
         {
-            if (IsResourceRequest(request.Path))
-                return ResourceFile(request.Path);
-
             var requestMethod = request.RequestMethod;
 
             string requestPath = request.Path;

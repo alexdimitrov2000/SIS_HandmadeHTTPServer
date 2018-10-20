@@ -21,7 +21,10 @@
 
             //server.Run();
 
-            var server = new Server(8000, new ControllerRouter());
+            var controllerRouter = new ControllerRouter();
+            var resourceRouter = new ResourceRouter();
+
+            var server = new Server(8000, new HttpRouteHandlingContext(controllerRouter, resourceRouter));
 
             MvcEngine.Run(server);
         }
