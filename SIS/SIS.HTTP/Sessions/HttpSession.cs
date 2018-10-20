@@ -18,7 +18,7 @@
         public string Id { get; }
 
         public void AddParameter(string name, object parameter)
-            => this.parameters.Add(name, parameter);
+            => this.parameters[name] = parameter;
 
         public void ClearParameters()
             => this.parameters.Clear();

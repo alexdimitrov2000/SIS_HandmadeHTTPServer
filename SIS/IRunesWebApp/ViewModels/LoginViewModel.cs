@@ -1,4 +1,4 @@
-﻿namespace IRunesWebApp
+﻿namespace IRunesWebApp.ViewModels
 {
     public class LoginViewModel
     {

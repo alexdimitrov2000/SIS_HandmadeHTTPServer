@@ -5,6 +5,7 @@
     using HTTP.Requests.Contracts;
     using HTTP.Responses.Contracts;
     using SIS.Framework.ActionResults.Contracts;
+    using SIS.Framework.Services.Contracts;
     using SIS.HTTP.Common;
     using SIS.HTTP.Enums;
     using SIS.WebServer.Results;
@@ -18,6 +19,13 @@
 
     public class ControllerRouter : IHttpHandler
     {
+        private readonly IDependencyContainer dependencyContainer;
+
+        public ControllerRouter(IDependencyContainer dependencyContainer)
+        {
+            this.dependencyContainer = dependencyContainer;
+        }
+
         private Controller GetController(string controllerName, IHttpRequest request)
         {
             if (!string.IsNullOrEmpty(controllerName))
@@ -29,7 +37,7 @@
                     controllerName);
 
                 var controllerType = Type.GetType(controllerTypeName);
-                var controller = (Controller)Activator.CreateInstance(controllerType);
+                var controller = (Controller)this.dependencyContainer.CreateInstance(controllerType);
 
                 if (controller != null)
                 {
@@ -87,6 +95,9 @@
 
             if (actionResult is IRedirectable)
                 return new RedirectResult(invocationResult);
+
+            if (actionResult is IError)
+                return new BadRequestResult(invocationResult);
 
             throw new InvalidOperationException("The view result is not supported.");
         }
@@ -160,7 +171,7 @@
             {
                 try
                 {
-                    object value = this.GetParameterFromRequestData(request, prop.Name);
+                    object value = this.GetParameterFromRequestData(request, prop.Name.ToLower());
                     prop.SetValue(bindingModelInstance, Convert.ChangeType(value, prop.PropertyType
                         ));
                 }

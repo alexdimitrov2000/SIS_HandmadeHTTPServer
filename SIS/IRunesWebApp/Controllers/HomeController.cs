@@ -6,7 +6,7 @@
     using SIS.HTTP.Responses.Contracts;
     using System.Collections.Generic;
 
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private const string UsernameKey = "Username";
         private const string LoggedIndexView = "LoggedIndex";
@@ -29,6 +29,9 @@
 
         public IActionResult Index()
         {
+            if (this.IsAuthenticated())
+                return this.View(LoggedIndexView);
+
             return View();
         }
     }

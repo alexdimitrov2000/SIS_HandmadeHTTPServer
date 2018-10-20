@@ -2,9 +2,12 @@
 {
     using Controllers;
     using IRunesWebApp.Data;
+    using IRunesWebApp.Services;
+    using IRunesWebApp.Services.Contracts;
     using Microsoft.EntityFrameworkCore;
     using SIS.Framework;
     using SIS.Framework.Routers;
+    using SIS.Framework.Services;
     using SIS.HTTP.Enums;
     using SIS.WebServer;
     using SIS.WebServer.Routing;
@@ -21,7 +24,11 @@
 
             //server.Run();
 
-            var controllerRouter = new ControllerRouter();
+            var dependencyContainer = new DependencyContainer();
+            dependencyContainer.RegisterDependency<IHashService, HashService>();
+            dependencyContainer.RegisterDependency<IUserService, UserService>();
+
+            var controllerRouter = new ControllerRouter(dependencyContainer);
             var resourceRouter = new ResourceRouter();
 
             var server = new Server(8000, new HttpRouteHandlingContext(controllerRouter, resourceRouter));
