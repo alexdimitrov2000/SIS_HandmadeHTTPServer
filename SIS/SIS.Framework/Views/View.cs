@@ -23,7 +23,9 @@
             string fullHtml = this.ReadFile();
             string renderedHtml = this.RenderHtml(fullHtml);
 
-            return renderedHtml;
+            string viewContent = File.ReadAllText($"Views/_Layout.html").Replace("@RenderBody", renderedHtml);
+
+            return viewContent;
         }
 
         private string ReadFile()
