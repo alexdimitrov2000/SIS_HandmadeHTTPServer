@@ -22,6 +22,11 @@
 
         public IHttpRequest Request { get; set; }
 
+        protected bool IsAuthenticated()
+        {
+            return this.Request.Session.ContainsParameter("username");
+        }
+
         protected IViewable View([CallerMemberName] string caller = "")
         {
             var controllerName = ControllerUtilities.GetControllerName(this);
@@ -35,5 +40,8 @@
 
         protected IRedirectable Redirect(string redirectUrl)
             => new RedirectResult(redirectUrl);
+
+        protected IError ThrowError(string content)
+            => new ErrorResult(content);
     }
 }
