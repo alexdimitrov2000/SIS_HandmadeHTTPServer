@@ -1,17 +1,14 @@
 ﻿namespace IRunesWebApp.Controllers
 {
-    using Services.Contracts;
-    using SIS.Framework.ActionResults.Contracts;
-    using SIS.Framework.Attributes.Methods;
-    using SIS.Framework.Controllers;
-    using SIS.HTTP.Common;
-    using SIS.HTTP.Exceptions;
-    using SIS.HTTP.Requests.Contracts;
-    using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Results;
-    using System.IO;
-    using System.Linq;
     using ViewModels;
+    using SIS.HTTP.Common;
+    using Services.Contracts;
+    using SIS.HTTP.Exceptions;
+    using SIS.Framework.Controllers;
+    using SIS.Framework.Attributes.Methods;
+    using SIS.Framework.ActionResults.Contracts;
+
+    using System.IO;
 
     public class UsersController : Controller
     {
@@ -100,59 +97,6 @@
             this.Request.Session.AddParameter("username", username);
             return this.Redirect(IndexView);
         }
-
-        //public IHttpResponse DoRegister(IHttpRequest request)
-        //{
-        //    string username = request.FormData["username"].ToString().Trim();
-        //    string password = request.FormData["password"].ToString();
-        //    string confirmPassword = request.FormData["confirmPassword"].ToString();
-        //    string email = request.FormData["email"].ToString().Trim();
-
-        //    if (password != confirmPassword)
-        //    {
-        //        throw new BadRequestException(PasswordsErrorMessage);
-        //    }
-
-        //    if (this.dbContext.Users.Any(u => u.Username == username))
-        //    {
-        //        var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-        //        errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, UsernameTakenErrorMessage);
-        //        return new BadRequestResult(errorViewContent);
-        //    }
-        //    if (this.dbContext.Users.Any(u => u.Email == email))
-        //    {
-        //        var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-        //        errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, EmailTakenErrorMessage);
-        //        return new BadRequestResult(errorViewContent);
-        //    }
-
-        //    string hashedPassword = this.hashService.Hash(password);
-
-        //    User user = new User
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        Username = username,
-        //        Password = hashedPassword,
-        //        Email = email
-        //    };
-
-        //    this.dbContext.Users.Add(user);
-        //    try
-        //    {
-        //        this.dbContext.SaveChanges();
-        //    }
-        //    catch (System.Exception e)
-        //    {
-        //        var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-        //        errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, e.Message);
-        //        return new BadRequestResult(errorViewContent);
-        //    }
-
-        //    var response = new RedirectResult(IndexView);
-
-        //    this.SignInUser(request, response, username);
-        //    return response;
-        //}
 
         public IActionResult Logout()
         {

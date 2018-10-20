@@ -4,7 +4,6 @@
     using Results;
     using Routing;
     using HTTP.Enums;
-    using HTTP.Common;
     using HTTP.Cookies;
     using HTTP.Sessions;
     using HTTP.Exceptions;
@@ -13,11 +12,9 @@
     using HTTP.Responses.Contracts;
 
     using System;
-    using System.IO;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Linq;
 
     public class ConnectionHandler
     {
@@ -125,20 +122,6 @@
 
             return new HttpRequest(result.ToString());
         }
-
-        //private IHttpResponse HandleRequest(IHttpRequest httpRequest)
-        //{
-        //    if (IsResourceRequest(httpRequest.Path))
-        //        return this.resourceRouter.Handle(httpRequest);
-
-        //    if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
-        //    {
-        //        string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
-        //        return new BadRequestResult(notFoundContent);
-        //    }
-
-        //    return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
-        //}
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
         {
