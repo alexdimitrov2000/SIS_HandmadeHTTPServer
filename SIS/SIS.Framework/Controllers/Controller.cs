@@ -18,6 +18,8 @@
 
         public ViewModel Model { get; }
 
+        public Model ModelState { get; } = new Model();
+
         public IHttpRequest Request { get; set; }
 
         protected IViewable View([CallerMemberName] string caller = "")
@@ -26,7 +28,7 @@
 
             var fullyQualifiedName = ControllerUtilities.GetViewFullQualifiedName(controllerName, caller);
 
-            var view = new View(fullyQualifiedName);
+            var view = new View(fullyQualifiedName, this.Model.Data);
 
             return new ViewResult(view);
         }
