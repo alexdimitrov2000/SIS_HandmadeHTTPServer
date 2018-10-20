@@ -3,6 +3,7 @@
     using Models;
     using Services;
     using Services.Contracts;
+    using SIS.Framework.ActionResults.Contracts;
     using SIS.HTTP.Common;
     using SIS.HTTP.Exceptions;
     using SIS.HTTP.Requests.Contracts;
@@ -28,32 +29,9 @@
             this.hashService = new HashService();
         }
 
-        public IHttpResponse Login()
+        public IActionResult Login()
         {
-            return this.View(LoginView);
-        }
-
-        public IHttpResponse DoLogin(IHttpRequest request)
-        {
-            string usernameOrEmail = request.FormData["username"].ToString().Trim();
-            string password = request.FormData["password"].ToString();
-
-            string hashedPassword = this.hashService.Hash(password);
-
-            User user = this.dbContext.Users
-                .FirstOrDefault(u => (u.Username == usernameOrEmail || u.Email == usernameOrEmail) && u.Password == hashedPassword);
-
-            if (user == null)
-            {
-                var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-                errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, UserNotFoundErrorMessage);
-                return new BadRequestResult(errorViewContent);
-            }
-
-            var response = new RedirectResult(IndexView);
-
-            this.SignInUser(request, response, usernameOrEmail);
-            return response;
+            return this.View();
         }
 
         public IHttpResponse Register()
