@@ -12,8 +12,7 @@
         public static void Main(string[] args)
         {
             var dependencyContainer = new DependencyContainer();
-            dependencyContainer.RegisterDependency<IHashService, HashService>();
-            dependencyContainer.RegisterDependency<IUserService, UserService>();
+            ConfigureServices(dependencyContainer);
 
             var controllerRouter = new ControllerRouter(dependencyContainer);
             var resourceRouter = new ResourceRouter();
@@ -21,6 +20,14 @@
             var server = new Server(8000, new HttpRouteHandlingContext(controllerRouter, resourceRouter));
 
             MvcEngine.Run(server);
+        }
+
+        private static void ConfigureServices(DependencyContainer dependencyContainer)
+        {
+            dependencyContainer.RegisterDependency<IHashService, HashService>();
+            dependencyContainer.RegisterDependency<IUserService, UserService>();
+            dependencyContainer.RegisterDependency<IAlbumService, AlbumService>();
+            dependencyContainer.RegisterDependency<ITrackService, TrackService>();
         }
     }
 }
