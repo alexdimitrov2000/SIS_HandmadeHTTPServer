@@ -14,7 +14,7 @@
 
         public const string ModelParam = "@Model.";
 
-        public static string[] ResourceExtensions = { ".js", ".css" };
+        public static string[] ResourceExtensions = { ".js", ".css", ".ico", ".map" };
 
         public static string Dot = ".";
     }
