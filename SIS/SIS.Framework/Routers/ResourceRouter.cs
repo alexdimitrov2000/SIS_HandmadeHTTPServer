@@ -1,11 +1,12 @@
 ﻿namespace SIS.Framework.Routers
 {
-    using SIS.HTTP.Common;
-    using SIS.HTTP.Enums;
-    using SIS.HTTP.Requests.Contracts;
-    using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Api;
-    using SIS.WebServer.Results;
+    using HTTP.Enums;
+    using HTTP.Common;
+    using WebServer.Api;
+    using WebServer.Results;
+    using HTTP.Requests.Contracts;
+    using HTTP.Responses.Contracts;
+
     using System.IO;
 
     public class ResourceRouter : IHttpHandler

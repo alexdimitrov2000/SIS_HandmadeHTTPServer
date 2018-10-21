@@ -1,9 +1,9 @@
 ﻿namespace SIS.Framework.Routers
 {
     using HTTP.Common;
+    using WebServer.Api;
     using HTTP.Requests.Contracts;
     using HTTP.Responses.Contracts;
-    using WebServer.Api;
 
     using System.Linq;
 

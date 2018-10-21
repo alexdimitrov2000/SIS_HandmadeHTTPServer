@@ -1,12 +1,11 @@
 ﻿namespace SIS.Framework.Views
 {
-    using SIS.Framework.ActionResults.Contracts;
-    using SIS.HTTP.Common;
-    using SIS.HTTP.Extensions;
-    using System;
-    using System.Collections.Generic;
+    using HTTP.Common;
+    using ActionResults.Contracts;
+
     using System.IO;
     using System.Linq;
+    using System.Collections.Generic;
 
     public class View : IRenderable
     {
@@ -47,7 +46,7 @@
                 foreach (var parameter in this.viewData)
                 {
                     renderedHtml = renderedHtml
-                        .Replace(GlobalConstants.ModelParam + parameter.Key.Capitalize(), parameter.Value.ToString());
+                        .Replace(GlobalConstants.ModelParam + parameter.Key, parameter.Value.ToString());
                 }
             }
 
