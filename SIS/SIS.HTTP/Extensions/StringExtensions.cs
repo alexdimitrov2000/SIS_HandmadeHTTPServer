@@ -13,5 +13,15 @@
 
             return new string(wordChars);
         }
+
+        public static string LowerizeFirstLetter(this string word)
+        {
+            if (string.IsNullOrEmpty(word))
+                return word;
+
+            word = char.ToLower(word[0]) + word.Substring(1);
+
+            return word;
+        }
     }
 }
