@@ -20,29 +20,31 @@
 
 <div id="line"></div>
 
-<h1 id="heading">Create Album</h1>
-<form method="post" action="/Albums/Create" class="col-md-6">
-    <div class="form-group">
-        <div class="user-data">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" name="name" id="name" placeholder="Name...">
-        </div>
-        <div class="user-data">
-            <label for="cover">Cover</label>
-            <input type="text" class="form-control" name="cover" id="cover" placeholder="Cover...">
-        </div>
-        <div id="line"></div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="submit-button">
-                    <input type="submit" value="Create" class="btn" />
+<div class="container-fluid">
+    <h1 id="heading">Create Album</h1>
+    <form method="post" action="/Albums/Create" class="col-md-6">
+        <div class="form-group">
+            <div class="user-data">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name...">
+            </div>
+            <div class="user-data">
+                <label for="cover">Cover</label>
+                <input type="text" class="form-control" name="cover" id="cover" placeholder="Cover...">
+            </div>
+            <div id="line"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="submit-button">
+                        <input type="submit" value="Create" class="btn" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="submit-button">
+                        <a href="/Albums/All" class="btn">Back To All</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="submit-button">
-                    <a href="/Albums/All" class="btn">Back To All</a>
-                </div>
-            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
