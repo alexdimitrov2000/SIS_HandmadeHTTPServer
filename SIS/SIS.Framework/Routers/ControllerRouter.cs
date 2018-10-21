@@ -1,21 +1,23 @@
 ﻿namespace SIS.Framework.Routers
 {
-    using Attributes.Methods;
+    using HTTP.Enums;
+    using HTTP.Common;
     using Controllers;
+    using WebServer.Api;
+    using HTTP.Extensions;
+    using WebServer.Results;
+    using Attributes.Methods;
+    using Services.Contracts;
     using HTTP.Requests.Contracts;
+    using ActionResults.Contracts;
     using HTTP.Responses.Contracts;
-    using SIS.Framework.ActionResults.Contracts;
-    using SIS.Framework.Services.Contracts;
-    using SIS.HTTP.Common;
-    using SIS.HTTP.Enums;
-    using SIS.WebServer.Results;
+
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using WebServer.Api;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     public class ControllerRouter : IHttpHandler
     {
@@ -54,7 +56,9 @@
         {
             MethodInfo method = null;
 
-            foreach (var methodInfo in GetSuitableMethods(controller, actionName))
+            var suitableMethods = GetSuitableMethods(controller, actionName);
+
+            foreach (var methodInfo in suitableMethods)
             {
                 var attributes = methodInfo.GetCustomAttributes()
                                            .Where(a => a is HttpMethodAttribute)
@@ -171,9 +175,8 @@
             {
                 try
                 {
-                    object value = this.GetParameterFromRequestData(request, prop.Name.ToLower());
-                    prop.SetValue(bindingModelInstance, Convert.ChangeType(value, prop.PropertyType
-                        ));
+                    object value = this.GetParameterFromRequestData(request, prop.Name.LowerizeFirstLetter());
+                    prop.SetValue(bindingModelInstance, Convert.ChangeType(value, prop.PropertyType));
                 }
                 catch
                 {
