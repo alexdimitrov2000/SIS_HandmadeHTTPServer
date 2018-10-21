@@ -1,19 +1,18 @@
 ﻿namespace IRunesWebApp.Controllers
 {
     using Models;
+    using ViewModels;
     using SIS.HTTP.Common;
-    using SIS.HTTP.Requests.Contracts;
-    using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Results;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+    using Services.Contracts;
+    using SIS.Framework.Controllers;
+    using SIS.Framework.Attributes.Methods;
+    using SIS.Framework.ActionResults.Contracts;
 
-    public class TracksController : BaseController
+    using System.IO;
+    using System.Collections.Generic;
+
+    public class TracksController : Controller
     {
-        private const string CreateView = "Create";
-        private const string DetailsView = "Details";
         private const string NonexistingAlbumErrorMessage = "Album with the given id was not found!";
         private const string TrackNotFoundErrorMessage = "Track not found!";
         private const string VideoParam = "Video";
@@ -21,27 +20,64 @@
         private const string PriceParam = "Price";
         private const string AlbumIdParam = "AlbumId";
 
-        public IHttpResponse Create(IHttpRequest request)
-        {
-            var parameters = new Dictionary<string, string>()
-            {
-                { "AlbumId", request.QueryData["albumId"].ToString() }
-            };
+        private readonly ITrackService trackService;
 
-            return this.View(CreateView, parameters);
+        private readonly IAlbumService albumService;
+
+        public TracksController(ITrackService trackService, IAlbumService albumService)
+        {
+            this.trackService = trackService;
+            this.albumService = albumService;
         }
 
-        public IHttpResponse Details(IHttpRequest request)
+        public IActionResult Create(string albumId)
         {
-            var albumId = request.QueryData["albumId"].ToString();
-            var trackId = request.QueryData["trackId"].ToString();
-            var track = this.dbContext.Tracks.FirstOrDefault(t => t.AlbumId == albumId && t.Id == trackId);
+            this.Model.Data[AlbumIdParam] = albumId;
+
+            return this.View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(TrackCreateViewModel model)
+        {
+            string name = model.Name;
+            string link = model.Link;
+            decimal price = model.Price;
+            string albumId = model.AlbumId;
+            
+            if (!this.albumService.ExistsById(albumId))
+            {
+                var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
+                errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, NonexistingAlbumErrorMessage);
+                return this.ThrowError(errorViewContent);
+            }
+
+            try
+            {
+                this.trackService.CreateTrack(name, link, price, albumId);
+            }
+            catch (System.Exception e)
+            {
+                var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
+                errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, e.Message);
+                return this.ThrowError(errorViewContent);
+            }
+
+            return this.Redirect($"/Albums/Details?id={albumId}");
+        }
+
+        public IActionResult Details(TrackDetailsViewModel model)
+        {
+            var albumId = model.AlbumId;
+            var trackId = model.TrackId;
+
+            Track track = this.trackService.GetTrackByAlbumTrackIds(albumId, trackId);
 
             if (track == null)
             {
                 var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
                 errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, TrackNotFoundErrorMessage);
-                return new BadRequestResult(errorViewContent);
+                return this.ThrowError(errorViewContent);
             }
 
             var parameters = new Dictionary<string, string>()
@@ -52,45 +88,12 @@
                 { AlbumIdParam, albumId }
             };
 
-            return this.View(DetailsView, parameters);
-        }
-
-        public IHttpResponse DoCreate(IHttpRequest request)
-        {
-            string name = request.FormData["name"].ToString();
-            string link = request.FormData["link"].ToString();
-            decimal price = decimal.Parse(request.FormData["price"].ToString());
-            string albumId = request.QueryData["albumId"].ToString();
-
-            if (this.dbContext.Albums.FirstOrDefault(a => a.Id == albumId) == null)
+            foreach (var parameter in parameters)
             {
-                var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-                errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, NonexistingAlbumErrorMessage);
-                return new BadRequestResult(errorViewContent);
+                this.Model.Data[parameter.Key] = parameter.Value;
             }
 
-            Track track = new Track()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = name,
-                Link = link,
-                Price = price,
-                AlbumId = albumId
-            };
-
-            this.dbContext.Tracks.Add(track);
-            try
-            {
-                this.dbContext.SaveChanges();
-            }
-            catch (System.Exception e)
-            {
-                var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
-                errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, e.Message);
-                return new BadRequestResult(errorViewContent);
-            }
-
-            return new RedirectResult($"/Albums/Details?id={albumId}");
+            return this.View();
         }
     }
 }

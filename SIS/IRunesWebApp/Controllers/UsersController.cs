@@ -13,8 +13,6 @@
     public class UsersController : Controller
     {
         private const string IndexView = "/";
-        private const string LoginView = "Login";
-        private const string RegisterView = "Register";
         private const string PasswordsErrorMessage = "Passwords do not match.";
         private const string UsernameTakenErrorMessage = "Username is already taken.";
         private const string EmailTakenErrorMessage = "There is already a registered user with that email.";

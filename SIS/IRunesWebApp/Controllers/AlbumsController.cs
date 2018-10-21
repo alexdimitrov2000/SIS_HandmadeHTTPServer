@@ -1,108 +1,73 @@
 ﻿namespace IRunesWebApp.Controllers
 {
-    using Models;
+    using ViewModels;
     using SIS.HTTP.Common;
-    using SIS.HTTP.Requests.Contracts;
-    using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Results;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
+    using Services.Contracts;
+    using SIS.Framework.Controllers;
+    using SIS.Framework.Attributes.Methods;
+    using SIS.Framework.ActionResults.Contracts;
 
-    public class AlbumsController : BaseController
+    using System;
+    using System.IO;
+
+    public class AlbumsController : Controller
     {
         private const string AllView = "All";
-        private const string CreateView = "Create";
-        private const string DetailsView = "Details";
-        private const string IndexView = "/";
-        private const string AlbumHrefTag = "<a href=\"/Albums/Details?id=@albumId\" ><strong>@albumName</strong></a><br /><br />";
-        private const string AlbumImageTag = "<img src=\"@albumImageUrl\" class=\"img-fluid\" alt=\"Responsive image\" />";
-        private const string TrackTag = "<li class=\"black-heading\"><a href=\"/Tracks/Details?albumId=@albumId&trackId=@trackId\" ><em>@trackName</em></a></li>";
-        private const string CoverParam = "Cover";
-        private const string NameParam = "Name";
-        private const string PriceParam = "Price";
-        private const string AlbumIdParam = "AlbumId";
-        private const string TracksContentParam = "TracksContent";
         private const string AlbumsContentParam = "AlbumsContent";
 
-        public IHttpResponse All()
+        private readonly IAlbumService albumService;
+
+        public AlbumsController(IAlbumService albumService)
         {
-            var albums = this.dbContext.Albums.ToList();
-            var sb = new StringBuilder();
-            foreach (var album in albums)
-            {
-                var line = AlbumHrefTag.Replace("@albumId", album.Id).Replace("@albumName", album.Name);
-                sb.AppendLine(line);
-            }
-
-            var parameters = new Dictionary<string, string>
-            {
-                { AlbumsContentParam, sb.ToString() }
-            };
-
-            return this.View(AllView, parameters);
+            this.albumService = albumService;
         }
 
-        public IHttpResponse Create()
+        public IActionResult All()
         {
-            return this.View(CreateView);
+            var albumsViewContent = this.albumService.GetAlbumsViewContent();
+
+            this.Model.Data[AlbumsContentParam] = albumsViewContent;
+
+            return this.View();
         }
 
-        public IHttpResponse Details(IHttpRequest request)
+        public IActionResult Create()
         {
-            var albumId = request.QueryData["id"].ToString();
-            var album = this.dbContext.Albums.FirstOrDefault(a => a.Id == albumId);
-
-            string imageUrl = AlbumImageTag.Replace("@albumImageUrl", album.Cover);
-
-            var parameters = new Dictionary<string, string>()
-            {
-                { CoverParam, imageUrl },
-                { NameParam, album.Name },
-                { PriceParam, album.Price.ToString("F2") },
-                { AlbumIdParam, albumId }
-            };
-
-            var sbTracks = new StringBuilder();
-            foreach (var track in album.Tracks)
-            {
-                var line = TrackTag.Replace("@albumId", albumId).Replace("@trackId", track.Id).Replace("@trackName", track.Name);
-                sbTracks.AppendLine(line);
-            }
-
-            string tracksContent = sbTracks.ToString();
-            parameters.Add(TracksContentParam, tracksContent);
-
-            return this.View(DetailsView, parameters);
+            return this.View();
         }
 
-        public IHttpResponse DoCreate(IHttpRequest request)
+        [HttpPost]
+        public IActionResult Create(AlbumCreateViewModel model)
         {
-            string name = request.FormData["name"].ToString();
-            string cover = request.FormData["cover"].ToString();
+            string name = model.Name;
+            string cover = model.Cover;
 
-            Album album = new Album
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = name,
-                Cover = cover
-            };
-
-            this.dbContext.Albums.Add(album);
             try
             {
-                this.dbContext.SaveChanges();
+                this.albumService.CreateAlbum(name, cover);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
                 errorViewContent = errorViewContent.Replace(GlobalConstants.ErrorModel, e.Message);
-                return new BadRequestResult(errorViewContent);
+                return this.ThrowError(errorViewContent);
+            }
+            
+            return this.Redirect(AllView);
+        }
+
+        public IActionResult Details(AlbumDetailsViewModel model)
+        {
+            var albumId = model.Id;
+
+            var parameters = this.albumService.GetAlbumDetailsParameters(albumId);
+
+            foreach (var parameter in parameters)
+            {
+                this.Model.Data[parameter.Key] = parameter.Value;
             }
 
-            return new RedirectResult(AllView);
+            return this.View();
         }
     }
 }
