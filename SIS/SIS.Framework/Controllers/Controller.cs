@@ -4,9 +4,11 @@
     using Models;
     using Utilities;
     using ActionResults;
+    using Security.Contracts;
     using ActionResults.Contracts;
     using HTTP.Requests.Contracts;
 
+    using System.IO;
     using System.Runtime.CompilerServices;
 
     public abstract class Controller
@@ -22,19 +24,34 @@
 
         public IHttpRequest Request { get; set; }
 
+        public IIdentity Identity => (IIdentity)this.Request.Session.GetParameter("auth");
+
+        public ViewEngine ViewEngine { get; } = new ViewEngine();
+
         protected bool IsAuthenticated()
         {
-            return this.Request.Session.ContainsParameter("username");
+            return this.Request.Session.ContainsParameter("auth");
         }
 
-        protected IViewable View([CallerMemberName] string caller = "")
+        protected IViewable View([CallerMemberName] string actionName = "")
         {
             var controllerName = ControllerUtilities.GetControllerName(this);
+            string viewContent = null;
 
-            var fullyQualifiedName = ControllerUtilities.GetViewFullQualifiedName(controllerName, caller);
+            try
+            {
+                viewContent = this.ViewEngine.GetViewContent(controllerName, actionName);
+            }
+            catch (FileNotFoundException e)
+            {
+                this.Model.Data["Error"] = e.Message;
 
-            var view = new View(fullyQualifiedName, this.Model.Data);
+                viewContent = this.ViewEngine.GetErrorContent();
+            }
 
+            string renderedContent = this.ViewEngine.RenderHtml(viewContent, this.Model.Data);
+
+            var view = new View(renderedContent);
             return new ViewResult(view);
         }
 
@@ -43,5 +60,15 @@
 
         protected IError ThrowError(string content)
             => new ErrorResult(content);
+
+        protected void SignIn(IIdentity auth)
+        {
+            this.Request.Session.AddParameter("auth", auth);
+        }
+
+        protected void SignOut()
+        {
+            this.Request.Session.ClearParameters();
+        }
     }
 }

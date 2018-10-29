@@ -1,13 +1,16 @@
 ﻿namespace SIS.WebServer.Results
 {
+    using HTTP.Enums;
     using HTTP.Headers;
     using HTTP.Responses;
-    using System;
+
     using System.Text;
 
-    public class BadRequestResult : HttpResponse
+    public class UnauthorizedResult : HttpResponse
     {
-        public BadRequestResult(string content) : base(HTTP.Enums.HttpResponseStatusCode.BadRequest)
+        private const string DefaultErrorHandling = "<h1>You have no permission to access this functionality.</h1>";
+
+        public UnauthorizedResult(string content) : base(HttpResponseStatusCode.Unauthorized)
         {
             this.Headers.Add(new HttpHeader(HttpHeader.ContentType, "text/html"));
             this.Content = Encoding.UTF8.GetBytes(content);

@@ -1,0 +1,10 @@
+﻿<div class="col-md-4">
+    <div class="text-center">
+        <!--<p>@Model.Cover</p>-->
+        <img src="@Model.Cover" class="img-fluid" alt="Responsive image" />
+        <h2 class="black-heading">Album Name: @Model.Name</h2>
+        <h2 class="black-heading">Album Price: $@Model.Price</h2>
+    </div>
+    <a href="/Tracks/Create?albumId=@Model.AlbumId" class="btn float-md-left">Create Track</a>
+    <a href="/Albums/All" class="btn float-md-right">Back To All</a>
+</div>

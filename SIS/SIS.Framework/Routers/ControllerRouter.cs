@@ -18,6 +18,7 @@
     using System.Reflection;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using SIS.Framework.Attributes.Action;
 
     public class ControllerRouter : IHttpHandler
     {
@@ -133,9 +134,8 @@
 
             object[] actionParameters = this.MapActionParameters(action, controller, request);
 
-            IActionResult actionResult = this.InvokeAction(controller, action, actionParameters);
-
-            return this.PrepareResponse(actionResult);
+            return this.Authorize(controller, action) ?? 
+                   this.PrepareResponse(this.InvokeAction(controller, action, actionParameters));
         }
 
         private IActionResult InvokeAction(Controller controller, MethodInfo action, object[] actionParameters)
@@ -204,33 +204,22 @@
             return null;
         }
 
-        private IHttpResponse ResourceFile(string requestPath)
+        private IHttpResponse Authorize(Controller controller, MethodInfo action)
         {
-            string resourcePath = requestPath.Substring(1);
-
-            if (!File.Exists(resourcePath))
+            if (action
+                .GetCustomAttributes()
+                .Where(a => a is AuthorizeAttribute)
+                .Cast<AuthorizeAttribute>()
+                .Any(a => !a.IsAuthorized(controller.Identity)))
             {
-                string notFoundContent = File.ReadAllText(GlobalConstants.NotFoundFilePath);
-                return new BadRequestResult(notFoundContent);
+                var errorViewContent = File.ReadAllText(GlobalConstants.AuthorizationErrorViewPath);
+                errorViewContent = errorViewContent
+                    .Replace(GlobalConstants.ErrorModel, 
+                                        "You have no permission to access this functionality. Please log in first and try again.");
+                return new UnauthorizedResult(errorViewContent);
             }
 
-            var resourceContent = File.ReadAllBytes(resourcePath);
-
-            return new InlineResourceResult(resourceContent, HttpResponseStatusCode.Ok);
-        }
-
-        private bool IsResourceRequest(string path)
-        {
-            if (path.Contains(GlobalConstants.Dot))
-            {
-                var lastIndexOfDot = path.LastIndexOf(GlobalConstants.Dot);
-
-                var resourceExtension = path.Substring(lastIndexOfDot);
-
-                return GlobalConstants.ResourceExtensions.Contains(resourceExtension);
-            }
-
-            return false;
+            return null;
         }
 
         private bool? IsValid(object bindingModel, Type bindingModelType)

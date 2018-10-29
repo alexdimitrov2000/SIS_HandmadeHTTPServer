@@ -4,11 +4,13 @@
     using SIS.HTTP.Common;
     using Services.Contracts;
     using SIS.Framework.Controllers;
+    using SIS.Framework.Attributes.Action;
     using SIS.Framework.Attributes.Methods;
     using SIS.Framework.ActionResults.Contracts;
 
     using System;
     using System.IO;
+    using System.Linq;
 
     public class AlbumsController : Controller
     {
@@ -22,21 +24,30 @@
             this.albumService = albumService;
         }
 
+        [Authorize]
         public IActionResult All()
         {
-            var albumsViewContent = this.albumService.GetAlbumsViewContent();
+            var albums = this.albumService.GetAllAlbums();
 
-            this.Model.Data[AlbumsContentParam] = albumsViewContent;
+            var albumsViewModel = albums.Select(a => new AlbumAllViewModel
+            {
+                Name = a.Name,
+                AlbumId = a.Id
+            });
+
+            this.Model.Data["AlbumsViewModel"] = albumsViewModel;
 
             return this.View();
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             return this.View();
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(AlbumCreateViewModel model)
         {
             string name = model.Name;
@@ -56,16 +67,33 @@
             return this.Redirect(AllView);
         }
 
+        [Authorize]
         public IActionResult Details(AlbumDetailsViewModel model)
         {
             var albumId = model.Id;
 
-            var parameters = this.albumService.GetAlbumDetailsParameters(albumId);
-
-            foreach (var parameter in parameters)
+            var album = this.albumService.GetAlbumById(albumId);
+            
+            var albumViewModel = new AlbumViewModel
             {
-                this.Model.Data[parameter.Key] = parameter.Value;
-            }
+                Name = album.Name,
+                Cover = album.Cover,
+                Price = album.Price.ToString("F2"),
+                AlbumId = album.Id
+            };
+
+            var tracksViewModel = new TrackCollectionViewModel
+            {
+                Tracks = album.Tracks.Select(t => new TracksViewModel
+                {
+                    Name = t.Name,
+                    AlbumId = album.Id,
+                    TrackId = t.Id
+                })
+            };
+
+            this.Model.Data["AlbumViewModel"] = albumViewModel;
+            this.Model.Data["TrackCollectionViewModel"] = tracksViewModel;
 
             return this.View();
         }

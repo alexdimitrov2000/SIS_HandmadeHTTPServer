@@ -6,6 +6,14 @@
 
     public static class MvcEngine
     {
+        public static void Configure()
+        {
+            RegisterAssemblyName();
+            RegisterControllersData();
+            RegisterViewsData();
+            RegisterModelsData();
+        }
+
         public static void Run(Server server)
         {
             RegisterAssemblyName();

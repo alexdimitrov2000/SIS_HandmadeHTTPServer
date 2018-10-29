@@ -2,6 +2,7 @@
 {
     public class HttpHeader
     {
+        public static string ContentType = "Content-Type";
         public static string ContentLength = "Content-Length";
         public static string ContentDisposition = "Content-Disposition";
 

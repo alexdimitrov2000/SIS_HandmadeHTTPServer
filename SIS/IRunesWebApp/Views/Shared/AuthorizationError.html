@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../Resources/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <h1>An error occured!</h1>
+        <div class="alert alert-danger alert-dismissable col-md-6">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Error!</strong>
+            @Model.Error
+        </div>
+        <a href="/Users/Login" class="btn btn-primary">Log in</a>
+    </div>
+    <script src="../../Resources/js/bootstrap.min.js"></script>
+    <script src="../../Resources/js/jquery-3.3.1.min.js"></script>
+    <script src="../../Resources/js/popper.min.js"></script>
+</body>
+</html>

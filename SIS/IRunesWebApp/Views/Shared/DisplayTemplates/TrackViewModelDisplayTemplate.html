@@ -1,0 +1,16 @@
+﻿<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6 align-self-center">
+            <h3 class="black-heading text-center">Track Name: @Model.Name</h3>
+            <h3 class="black-heading text-center">Track Price: $@Model.Price</h3>
+            <div id="line"></div>
+            <div class="embed-responsive embed-responsive-21by9">
+                <iframe class="embed-responsive-item" src="@Model.VideoLink"></iframe>
+            </div>
+            <div id="line"></div>
+            <div class="submit-button">
+                <a href="../Albums/Details?id=@Model.AlbumId" class="btn">Back To Album</a>
+            </div>
+        </div>
+    </div>
+</div>

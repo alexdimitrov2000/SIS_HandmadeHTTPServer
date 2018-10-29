@@ -1,19 +1,21 @@
 ﻿namespace IRunesWebApp
 {
     using Services;
-    using SIS.Framework;
+    using SIS.Framework.Api;
     using Services.Contracts;
-    using SIS.Framework.Services;
+    using SIS.Framework.Services.Contracts;
+    using SIS.Framework;
 
-    public class Launcher
+    public class StartUp : MvcApplication
     {
-        public static void Main(string[] args)
+        public override void Configure()
         {
-            WebHost.Start(new StartUp());
+            MvcEngine.Configure();
         }
 
-        private static void ConfigureServices(DependencyContainer dependencyContainer)
+        public override void ConfigureServices(IDependencyContainer dependencyContainer)
         {
+            //dependencyContainer.RegisterDependency<IHomeService, HomeService>();
             dependencyContainer.RegisterDependency<IHashService, HashService>();
             dependencyContainer.RegisterDependency<IUserService, UserService>();
             dependencyContainer.RegisterDependency<IAlbumService, AlbumService>();

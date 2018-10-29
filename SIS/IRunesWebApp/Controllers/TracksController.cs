@@ -5,11 +5,11 @@
     using SIS.HTTP.Common;
     using Services.Contracts;
     using SIS.Framework.Controllers;
+    using SIS.Framework.Attributes.Action;
     using SIS.Framework.Attributes.Methods;
     using SIS.Framework.ActionResults.Contracts;
 
     using System.IO;
-    using System.Collections.Generic;
 
     public class TracksController : Controller
     {
@@ -30,6 +30,7 @@
             this.albumService = albumService;
         }
 
+        [Authorize]
         public IActionResult Create(string albumId)
         {
             this.Model.Data[AlbumIdParam] = albumId;
@@ -38,13 +39,17 @@
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(TrackCreateViewModel model)
         {
             string name = model.Name;
             string link = model.Link;
+            if (link.Contains("watch?v="))
+                link = model.Link.Replace("watch?v=", "embed/");
+
             decimal price = model.Price;
             string albumId = model.AlbumId;
-            
+
             if (!this.albumService.ExistsById(albumId))
             {
                 var errorViewContent = File.ReadAllText(GlobalConstants.ErrorViewPath);
@@ -66,6 +71,7 @@
             return this.Redirect($"/Albums/Details?id={albumId}");
         }
 
+        [Authorize]
         public IActionResult Details(TrackDetailsViewModel model)
         {
             var albumId = model.AlbumId;
@@ -80,18 +86,15 @@
                 return this.ThrowError(errorViewContent);
             }
 
-            var parameters = new Dictionary<string, string>()
+            var trackViewModel = new TrackViewModel
             {
-                { VideoParam, track.Link },
-                { NameParam, track.Name },
-                { PriceParam, track.Price.ToString("F2") },
-                { AlbumIdParam, albumId }
+                Name = track.Name,
+                VideoLink = track.Link,
+                Price = track.Price.ToString("F2"),
+                AlbumId = track.AlbumId
             };
 
-            foreach (var parameter in parameters)
-            {
-                this.Model.Data[parameter.Key] = parameter.Value;
-            }
+            this.Model.Data["TrackViewModel"] = trackViewModel;
 
             return this.View();
         }

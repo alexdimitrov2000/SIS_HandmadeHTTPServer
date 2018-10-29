@@ -1,12 +1,12 @@
 ﻿namespace IRunesWebApp.Services.Contracts
 {
-    using System.Collections.Generic;
+    using Models;
 
     public interface IAlbumService
     {
-        string GetAlbumsViewContent();
+        Album GetAlbumById(string albumId);
 
-        IDictionary<string, string> GetAlbumDetailsParameters(string albumId);
+        Album[] GetAllAlbums();
 
         void CreateAlbum(string name, string cover);
 

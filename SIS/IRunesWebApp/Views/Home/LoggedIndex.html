@@ -1,9 +1,10 @@
 ﻿<nav class="navbar navbar-expand-lg">
     <a class="navbar-brand" href="/">IRunes</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="#navbarSupportedContent">
+    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/">Home</a>
@@ -21,8 +22,6 @@
 <div id="line"></div>
 
 <div class="jumbotron jumbotron-fluid">
-    <h1>Welcome, <span>@Model.Username</span></h1>
+    <h1>Welcome, <span>@Model.LoggedIndexViewModel</span></h1>
     <h2>IRunes wishes you fun experience.</h2>
 </div>
-
-<h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>

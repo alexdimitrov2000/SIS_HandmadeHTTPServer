@@ -10,6 +10,8 @@
 
         public const string ErrorViewPath = "Views/Error.html";
 
+        public const string AuthorizationErrorViewPath = "Views/Shared/AuthorizationError.html";
+
         public const string ErrorModel = "@Model.Error";
 
         public const string ModelParam = "@Model.";
