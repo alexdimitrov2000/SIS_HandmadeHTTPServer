@@ -5,6 +5,7 @@
     using Services.Contracts;
     using SIS.Framework.Services.Contracts;
     using SIS.Framework;
+    using IRunesWebApp.Data;
 
     public class StartUp : MvcApplication
     {

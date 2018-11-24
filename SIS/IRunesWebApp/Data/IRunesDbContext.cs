@@ -25,7 +25,7 @@
         {
             optionsBuilder
                 .UseLazyLoadingProxies()
-                .UseSqlServer(@"Server=DESKTOP-MKII5J3\SQLEXPRESS;Database=IRunes;Integrated Security=True");
+                .UseSqlServer(@"Server=DESKTOP-TI6GEI6\SQLEXPRESS;Database=IRunes;Integrated Security=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
